@@ -1,0 +1,123 @@
+:: DBMS> CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+
+:: DBMS> INSERT INTO animals VALUES FROM ("Joe", "cat", 4);
+
+:: DBMS> INSERT INTO animals VALUES FROM ("Spot", "dog", 10);
+
+:: DBMS> INSERT INTO animals VALUES FROM ("Snoopy", "dog", 3);
+
+:: DBMS> INSERT INTO animals VALUES FROM ("Tweety", "bird", 1);
+
+:: DBMS> INSERT INTO animals VALUES FROM ("Joe", "bird", 2);
+
+:: DBMS> SHOW animals;
+Table name: animals
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Joe                  | bird     | 2
+Joe                  | cat      | 4
+Snoopy               | dog      | 3
+Spot                 | dog      | 10
+Tweety               | bird     | 1
+------------------------------------------------
+
+:: DBMS> dogs <- select (kind == "dog") animals;
+
+:: DBMS> SHOW dogs;
+Table name: dogs
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Snoopy               | dog      | 3
+Spot                 | dog      | 10
+------------------------------------------------
+
+:: DBMS> old_dogs <- select (years > 10) dogs;
+
+:: DBMS> SHOW old_dogs;
+Table name: old_dogs
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+------------------------------------------------
+
+:: DBMS> cats_or_dogs <- dogs + (select (kind == "cat") animals);
+
+:: DBMS> SHOW cats_or_dogs;
+Table name: cats_or_dogs
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Joe                  | cat      | 4
+Snoopy               | dog      | 3
+Spot                 | dog      | 10
+------------------------------------------------
+
+:: DBMS> CREATE TABLE species (kind VARCHAR(10)) PRIMARY KEY (kind);
+
+:: DBMS> INSERT INTO species VALUES FROM RELATION project (kind) animals;
+
+:: DBMS> SHOW species;
+Table name: species
+-------------
+kind
+-------------
+bird
+cat
+dog
+-------------
+
+:: DBMS> a <- rename (aname, akind) (project (name, kind) animals);
+
+:: DBMS> common_names <- project (name) (select (aname == name && akind != kind) (a * animals));
+
+:: DBMS> answer <- common_names;
+
+:: DBMS> SHOW answer;
+Table name: answer
+-----------------------
+name
+-----------------------
+Joe
+-----------------------
+
+:: DBMS> just_dogs <- cats_or_dogs - (select (kind == "cat") animals);
+
+:: DBMS> SHOW just_dogs;
+Table name: just_dogs
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Snoopy               | dog      | 3
+Spot                 | dog      | 10
+------------------------------------------------
+
+:: DBMS> DELETE FROM animals WHERE (name == "Joe");
+
+:: DBMS> SHOW animals;
+Table name: animals
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Snoopy               | dog      | 3
+Spot                 | dog      | 10
+Tweety               | bird     | 1
+------------------------------------------------
+
+:: DBMS> UPDATE animals SET name = "Buck", kind = "phoenix" WHERE (years >= 3 && kind == "dog");
+
+:: DBMS> SHOW animals;
+Table name: animals
+------------------------------------------------
+name                 | kind     | years
+------------------------------------------------
+Buck                 | phoenix  | 10
+Tweety               | bird     | 1
+------------------------------------------------
+
+:: DBMS> WRITE animals;
+
+:: DBMS> CLOSE animals;
+
+:: DBMS> EXIT;
